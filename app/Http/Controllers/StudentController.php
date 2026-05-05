@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StudentRequest;
+use App\Models\Lab;
+use App\Models\School;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -12,7 +15,7 @@ class StudentController
      */
     public function index()
     {
-        $students = Student::all();
+        $students = Student::all()->sortBy('lab');
         return view('admin.student.index',compact('students'));
     }
 
@@ -21,21 +24,23 @@ class StudentController
      */
     public function create()
     {
-        //
+        $labs = Lab::pluck('name','id');
+        $schools = School::pluck('name','id');
+        return view('admin.student.create',compact('labs','schools'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StudentRequest $request)
     {
-        //
+        Student::create($request->validated());
+        return redirect()->route('student.index')
+                        ->with('success','Data siswa berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+
+    public function show(Student $student)
     {
         //
     }
@@ -43,24 +48,28 @@ class StudentController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        //
+        return view('admin.student.edit',compact('student'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StudentRequest $request, Student $student)
     {
-        //
+        $student->update($request->validated());
+        return redirect()->route('student.index')
+                        ->with('success','Data siswa berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Student $student)
     {
-        //
+        $student->delete();
+        return redirect()->route('student.index')
+                         ->with('success','Data siswa berhasil dihapus');
     }
 }

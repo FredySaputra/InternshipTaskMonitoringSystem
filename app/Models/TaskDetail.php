@@ -20,6 +20,10 @@ class TaskDetail extends Model
         'student_id'
     ];
 
+    protected $casts = [
+        'student_id'=>'array'
+    ];
+
     public function student():BelongsTo
     {
         return $this->belongsTo(Student::class,'student_id','id');

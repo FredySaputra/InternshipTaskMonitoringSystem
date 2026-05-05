@@ -1,40 +1,38 @@
 @extends('admin/layout/main')
 
-@section('title','Manajemen Siswa')
+@section('title','Manajemen Tugas PKL')
 
 @section('content')
 
 <div class="d-flex flex-column" style="height: 100vw">
     <div class="d-flex align-items-center mt-30" style="height: 15%">
-        <h1 class="d-flex">Manajemen Siswa</h1>
-        <a href="{{route('student.create')}}" class="btn btn-primary ">Tambah Data +</a>
+        <h1 class="d-flex">Manajemen Tugas PKL</h1>
+        <a href="{{route('task.create')}}" class="btn btn-primary ">Tambah Data +</a>
     </div>
     <div style="height: 85%;width: 100%">
         <table class="table table-primary table-stripped">
             <thead>
                 <tr>
-                    <th scope="col">Nama</th>
-                    <th scope="col">Sekolah</th>
-                    <th scope="col">Lab</th>
+                    <th scope="col">Tugas</th>
+                    <th scope="col">Tenggat</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($students as $student)
+                @forelse ($tasks as $task)
                 <tr>
-                    <td>{{$student->name}}</td>
-                    <td>{{$student->school->name}}</td>
-                    <td>{{$student->lab->name}}</td>
-                    <td>{{$student->status}}</td>
-                    <td><a href="#" class="text-warning">Ubah</a> <form action="{{route('student.destroy',$student->id)}}" method="POST">
+                    <td>{{$task->desc}}</td>
+                    <td>{{$task->due}}</td>
+                    <td>Ditambahkan</td>
+                    <td><a href="#" class="text-warning">Ubah</a> <form action="{{route('task.destroy',$task->id)}}" method="POST">
                         @csrf
                         @method('DELETE')
                     <button type="submit" class="btn btn-danger">Hapus</button></form></td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center">Belum ada data siswa yang ditambahkan.</td>
+                    <td colspan="5" class="text-center">Belum ada data tugas yang ditambahkan.</td>
                 </tr>
                 @endforelse
             </tbody>

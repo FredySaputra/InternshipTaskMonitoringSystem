@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LabController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TaskController;
 use App\Models\Student;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +18,10 @@ Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::middleware('auth:web')->group(function(){
     Route::get('/admin/dashboard',[AdminController::class,'index']);
-    Route::get('/student',[StudentController::class,'index'])->name('student');
-
-    Route::get('/school',[SchoolController::class,'index'])->name('school');
+    Route::resource('/student',StudentController::class);
+    Route::resource('/school',SchoolController::class);
+    Route::resource('/lab',LabController::class);
+    Route::resource('/task',TaskController::class);
 });
 
 Route::middleware('auth:students')->group(function(){

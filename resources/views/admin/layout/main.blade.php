@@ -33,13 +33,16 @@
     <ul class="nav flex-column">
         <div class="height">
         <li class="nav-item">
-            <a href="{{route('school')}}" class="nav-link text-light">Sekolah</a>
+            <a href="{{route('school.index')}}" class="nav-link text-light">Sekolah</a>
         </li>
         <li class="nav-item">
-            <a href="#" class="nav-link text-light">Lab</a>
+            <a href="{{route('lab.index')}}" class="nav-link text-light">Lab</a>
         </li>
         <li class="nav-item">
-            <a href="{{route('student')}}" class="nav-link text-light">Siswa</a>
+            <a href="{{route('student.index')}}" class="nav-link text-light">Siswa</a>
+        </li>
+        <li class="nav-item">
+            <a href="{{route('task.index')}}" class="nav-link text-light">Penugasan</a>
         </li>
         </div>
         <div>

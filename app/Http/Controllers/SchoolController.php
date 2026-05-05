@@ -31,7 +31,7 @@ class SchoolController
     public function store(SchoolRequest $request)
     {
         School::create($request->validated());
-        return redirect()->route('school')
+        return redirect()->route('school.index')
                         ->with('success','Data sekolah berhasil ditambahkan');
     }
 
@@ -50,7 +50,7 @@ class SchoolController
     public function update(SchoolRequest $request, School $school)
     {
         $school->update($request->validated());
-        return redirect()->route('school')
+        return redirect()->route('school.index')
                         ->with('success','Data sekolah berhasil diupdate');
     }
 
@@ -60,7 +60,7 @@ class SchoolController
     public function destroy(School $school)
     {
         $school->delete();
-        return redirect()->route('school')
+        return redirect()->route('school.index')
                          ->with('success','Data sekolah berhasil dihapus');
     }
 }
