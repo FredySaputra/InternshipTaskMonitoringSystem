@@ -69,11 +69,11 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model' => User::class
         ],
         'students' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', Student::class),
+            'model' => Student::class
         ]
 
         // 'users' => [

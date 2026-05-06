@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LabController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentTaskController;
 use App\Http\Controllers\TaskController;
 use App\Models\Student;
 use Illuminate\Support\Facades\Route;
@@ -25,5 +26,7 @@ Route::middleware('auth:web')->group(function(){
 });
 
 Route::middleware('auth:students')->group(function(){
-
+    Route::get('/student-dashboard',[StudentController::class,'dashboard'])->name('student.dashboard');
+    Route::post('/student-task/{detail}/add',[StudentTaskController::class,'add'])->name('student-task.add');
+    Route::get('/student-task/{detail}',[StudentTaskController::class,'create'])->name('student-task.create');
 });

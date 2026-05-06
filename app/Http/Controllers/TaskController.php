@@ -79,8 +79,12 @@ class TaskController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Task $task)
     {
-        //
+        TaskDetail::where('task_id',$task->id)->delete();
+        $task->delete();
+
+        return redirect()->route('task.index')
+                        ->with('success','Tugas berhasil dihapus.');
     }
 }

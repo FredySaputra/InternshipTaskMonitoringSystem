@@ -25,7 +25,7 @@ class AuthController
 
     if(Auth::guard('students')->attempt($credentials)){
         $request->session()->regenerate();
-        return redirect()->intended('/student/dashboard');
+        return redirect()->intended('/student-dashboard');
     }
 
     return back()->withErrors(['message'=>'Username atau password salah']);

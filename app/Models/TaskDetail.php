@@ -15,14 +15,13 @@ class TaskDetail extends Model
 
     protected $fillable = [
         'proof',
+        'description',
         'sub_stat',
         'task_id',
         'student_id'
     ];
 
-    protected $casts = [
-        'student_id'=>'array'
-    ];
+
 
     public function student():BelongsTo
     {

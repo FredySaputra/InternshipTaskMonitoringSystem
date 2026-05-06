@@ -6,10 +6,21 @@ use App\Http\Requests\StudentRequest;
 use App\Models\Lab;
 use App\Models\School;
 use App\Models\Student;
+use App\Models\TaskDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController
 {
+
+    public function dashboard()
+    {
+        $student = Auth::guard('students')->user();
+        $taskDetails = TaskDetail::where('student_id',$student->id)->where('sub_stat','!=','accepted')->get();
+        return view('student.dashboard',compact('student','taskDetails'));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -34,7 +45,14 @@ class StudentController
      */
     public function store(StudentRequest $request)
     {
-        Student::create($request->validated());
+        Student::create([
+            'name'=>$request->name,
+            'username'=>$request->username,
+            'password'=>Hash::make($request->password),
+            'status'=>$request->status,
+            'school_id'=>$request->school_id,
+            'lab_id'=>$request->lab_id
+        ]);
         return redirect()->route('student.index')
                         ->with('success','Data siswa berhasil ditambahkan');
     }
