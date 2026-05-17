@@ -64,6 +64,11 @@ class LabController
      */
     public function destroy(Lab $lab)
     {
+        if ($lab->student()->exists()) {
+            return redirect()->route('lab.index')
+                             ->with('errors', 'Gagal dihapus: Lab ini masih memiliki siswa aktif.');
+        }
+
         $lab->delete();
         return redirect()->route('lab.index')
                          ->with('success','Data lab berhasil dihapus');

@@ -59,6 +59,11 @@ class SchoolController
      */
     public function destroy(School $school)
     {
+        if ($school->student()->exists()) {
+            return redirect()->route('school.index')
+                             ->with('errors', 'Gagal dihapus: Sekolah ini masih memiliki siswa aktif.');
+        }
+
         $school->delete();
         return redirect()->route('school.index')
                          ->with('success','Data sekolah berhasil dihapus');

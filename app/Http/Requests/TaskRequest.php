@@ -28,7 +28,7 @@ class TaskRequest extends FormRequest
     {
         return [
             'desc' => ['required','string'],
-            'due' => ['required'],
+            'due' => ['required','date'],
             'student_id'=>['required','array'],
             'student_id.*'=>['exists:students,id']
         ];

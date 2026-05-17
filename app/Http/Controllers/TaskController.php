@@ -19,10 +19,16 @@ class TaskController
      */
     public function index()
     {
-        $tasks = Task::all();
-        $submitted = TaskDetail::where('sub_stat','submitted')->count();
-        $unsubmitted = TaskDetail::where('sub_stat','queue')->count();
-        return view('admin.task.index',compact('tasks','submitted','unsubmitted'));
+        $tasks = Task::withCount([
+            'taskDetail as submitted_count' => function ($query) {
+                $query->where('sub_stat', 'submitted');
+            },
+            'taskDetail as unsubmitted_count' => function ($query) {
+                $query->where('sub_stat', 'queue');
+            }
+        ])->get();
+
+        return view('admin.task.index', compact('tasks'));
     }
 
     /**
@@ -40,49 +46,62 @@ class TaskController
     public function store(TaskRequest $request)
     {
         $task = Task::create([
-            'desc'=>$request->desc,
-            'due'=>$request->due
+            'desc' => $request->desc,
+            'due'  => $request->due
         ]);
 
+        $taskDetails = [];
         foreach($request->student_id as $studentId){
-            TaskDetail::create([
-            'task_id'=>$task->id,
-            'student_id'=>(int)$studentId,
-            'sub_stat'=>'queue'
-        ]);
+            $taskDetails[] = [
+                'task_id'    => $task->id,
+                'student_id' => (int)$studentId,
+                'sub_stat'   => 'queue',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
         }
+
+        TaskDetail::insert($taskDetails);
 
         return redirect()->route('task.index')
                         ->with('success','Tugas berhasil ditambahkan.');
     }
 
-    public function submitted(Task $task){
-        $details = TaskDetail::with('student')->where('task_id',$task->id)->where('sub_stat','submitted')->get();
-        return view('admin.task.submitted',compact('details','task'));
+    public function submitted(Task $task)
+    {
+        $details = TaskDetail::with('student.lab')
+                    ->where('task_id', $task->id)
+                    ->whereIn('sub_stat', ['submitted', 'accepted', 'rejected'])
+                    ->get();
+
+        return view('admin.task.submitted', compact('details', 'task'));
     }
 
-    public function unsubmitted(Task $task){
-        $details = TaskDetail::with('student')->where('task_id',$task->id)->where('sub_stat','queue')->get();
-        return view('admin.task.unsubmitted',compact('details','task'));
+    public function unsubmitted(Task $task)
+    {
+        $details = TaskDetail::with('student.lab')
+                             ->where('task_id', $task->id)
+                             ->whereNotIn('sub_stat', ['submitted', 'accepted', 'rejected'])
+                             ->get();
+
+        return view('admin.task.unsubmitted', compact('details', 'task'));
     }
 
 
     public function clearProofs()
-{
-    $details = TaskDetail::whereNotNull('proof')->get();
+    {
+        $details = TaskDetail::whereNotNull('proof')->get();
 
-    foreach ($details as $detail) {
-        if (Storage::disk('public_htdocs')->exists($detail->proof)) {
-            Storage::disk('public_htdocs')->delete($detail->proof);
+        foreach ($details as $detail) {
+            if (Storage::disk('public_htdocs')->exists($detail->proof)) {
+                Storage::disk('public_htdocs')->delete($detail->proof);
+            }
         }
 
-        $detail->update([
-            'proof'       => null
-        ]);
-    }
+        TaskDetail::whereNotNull('proof')->update(['proof' => null]);
 
-    return redirect()->back()->with('success', 'Semua bukti berhasil dihapus.');
-}
+        return redirect()->back()->with('success', 'Semua bukti berhasil dihapus.');
+    }
 
     /**
      * Display the specified resource.
@@ -112,25 +131,45 @@ class TaskController
             'desc'       => 'required|string',
             'due'        => 'required|date',
             'student_id' => 'required|array',
+            'student_id.*'=> ['exists:students,id']
         ]);
 
-        $task->update([
+         $task->update([
             'desc' => $request->desc,
             'due'  => $request->due,
         ]);
 
-        TaskDetail::where('task_id', $task->id)->delete();
+         $currentStudentIds = TaskDetail::where('task_id', $task->id)
+                                       ->pluck('student_id')
+                                       ->toArray();
 
-        foreach ($request->student_id as $studentId) {
-            TaskDetail::create([
-                'task_id'    => $task->id,
-                'student_id' => (int) $studentId,
-                'sub_stat'   => 'queue',
-            ]);
+         $requestedStudentIds = array_map('intval', $request->student_id);
+
+         $studentsToAdd = array_diff($requestedStudentIds, $currentStudentIds);
+        $studentsToRemove = array_diff($currentStudentIds, $requestedStudentIds);
+
+         if (!empty($studentsToRemove)) {
+             TaskDetail::where('task_id', $task->id)
+                      ->whereIn('student_id', $studentsToRemove)
+                      ->delete();
+        }
+
+         if (!empty($studentsToAdd)) {
+            $newDetails = [];
+            foreach ($studentsToAdd as $studentId) {
+                $newDetails[] = [
+                    'task_id'    => $task->id,
+                    'student_id' => $studentId,
+                    'sub_stat'   => 'queue',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+             TaskDetail::insert($newDetails);
         }
 
         return redirect()->route('task.index')
-                        ->with('success', 'Tugas berhasil diubah.');
+                        ->with('success', 'Tugas berhasil diubah tanpa menghapus pekerjaan siswa.');
     }
 
     /**
@@ -138,11 +177,19 @@ class TaskController
      */
     public function destroy(Task $task)
     {
-        TaskDetail::where('task_id',$task->id)->delete();
+         $details = TaskDetail::where('task_id', $task->id)->get();
+
+         foreach ($details as $detail) {
+            if ($detail->proof && Storage::disk('public_htdocs')->exists($detail->proof)) {
+                Storage::disk('public_htdocs')->delete($detail->proof);
+            }
+        }
+
+         TaskDetail::where('task_id', $task->id)->delete();
         $task->delete();
 
         return redirect()->route('task.index')
-                        ->with('success','Tugas berhasil dihapus.');
+                        ->with('success', 'Tugas beserta semua file bukti berhasil dihapus.');
     }
 
     public function accept(Task $task, TaskDetail $detail)
@@ -159,5 +206,35 @@ class TaskController
 
         return redirect()->route('task.submitted', $task->id)
                         ->with('success', 'Berhasil menolak tugas.');
+    }
+
+    public function bulkAccept(Request $request, Task $task)
+    {
+        $request->validate([
+            'detail_ids'   => 'required|array',
+            'detail_ids.*' => 'exists:task_details,id'
+        ]);
+
+        TaskDetail::whereIn('id', $request->detail_ids)
+                  ->where('task_id', $task->id)
+                  ->update(['sub_stat' => 'accepted']);
+
+        return redirect()->route('task.submitted', $task->id)
+                        ->with('success', 'Berhasil menyetujui tugas terpilih.');
+    }
+
+    public function bulkReject(Request $request, Task $task)
+    {
+        $request->validate([
+            'detail_ids'   => 'required|array',
+            'detail_ids.*' => 'exists:task_details,id'
+        ]);
+
+        TaskDetail::whereIn('id', $request->detail_ids)
+                  ->where('task_id', $task->id)
+                  ->update(['sub_stat' => 'rejected']);
+
+        return redirect()->route('task.submitted', $task->id)
+                        ->with('success', 'Berhasil menolak tugas terpilih.');
     }
 }

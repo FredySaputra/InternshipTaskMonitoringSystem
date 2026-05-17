@@ -1,40 +1,54 @@
 @extends('admin/layout/main')
 
-@section('title','Manajemen Lab')
+@section('title', 'Manajemen Lab')
 
 @section('content')
 
-<div class="d-flex flex-column" style="height: 100vw">
-    <div class="d-flex align-items-center mt-30" style="height: 15%">
-        <h1 class="d-flex">Manajemen Lab</h1>
-        <a href="{{route('lab.create')}}" class="btn btn-primary ">Tambah Data +</a>
-    </div>
-    <div style="height: 85%;width: 100%">
-        <table class="table table-primary table-stripped">
-            <thead>
-                <tr style="text-align: center">
-                    <th scope="col">Nama Lab</th>
-                    <th scope="col">Kategori</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($labs as $lab)
-                <tr>
-                    <td>{{$lab->name}}</td>
-                    <td>{{$lab->category}}</td>
-                    <td><a href="#" class="text-warning">Ubah</a> <form action="{{route('lab.destroy',$lab->id)}}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Hapus</button></form></td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="text-center">Belum ada data lab yang ditambahkan.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Manajemen Lab</h2>
+    <a href="{{ route('lab.create') }}" class="btn btn-primary shadow-sm">
+        + Tambah Data
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-dark">
+                    <tr class="text-center">
+                        <th scope="col">Nama Lab</th>
+                        <th scope="col">Kategori</th>
+                        <th scope="col" width="200">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($labs as $lab)
+                    <tr class="align-middle">
+                        <td class="text-center">{{ $lab->name }}</td>
+                        <td class="text-center">{{ $lab->category }}</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="{{ route('lab.edit', $lab->id) }}" class="btn btn-warning btn-sm">Ubah</a>
+
+                                <form action="{{ route('lab.destroy', $lab->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus lab ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">
+                            Belum ada data lab yang ditambahkan.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

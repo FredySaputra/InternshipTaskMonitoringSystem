@@ -26,13 +26,20 @@ class StudentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name'=>['required','string'],
-            'username'=>['required','string'],
-            'password'=>['required','string'],
-            'status'=>['required','string'],
-            'school_id'=>['required','integer'],
-            'lab_id'=>['required','integer']
+        $rules = [
+            'name'      => ['required', 'string'],
+            'username'  => ['required', 'string'],
+            'status'    => ['required', 'string'],
+            'school_id' => ['required', 'integer'],
+            'lab_id'    => ['required', 'integer']
         ];
+
+        if ($this->isMethod('post')) {
+            $rules['password'] = ['required', 'string'];
+        } else {
+            $rules['password'] = ['nullable', 'string'];
+        }
+
+        return $rules;
     }
 }

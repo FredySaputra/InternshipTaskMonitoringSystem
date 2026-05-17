@@ -28,6 +28,8 @@ Route::middleware('auth:web')->group(function(){
     Route::resource('/task',TaskController::class);
     Route::get('/task/{task}/submitted',[TaskController::class,'submitted'])->name('task.submitted');
     Route::get('/task/{task}/unsubmitted',[TaskController::class,'unsubmitted'])->name('task.unsubmitted');
+    Route::post('/task/{task}/bulk-accept', [TaskController::class, 'bulkAccept'])->name('task.bulkAccept');
+    Route::post('/task/{task}/bulk-reject', [TaskController::class, 'bulkReject'])->name('task.bulkReject');
 });
 
 Route::middleware('auth:students')->group(function(){
