@@ -22,7 +22,12 @@ Route::middleware('auth:web')->group(function(){
     Route::resource('/student',StudentController::class);
     Route::resource('/school',SchoolController::class);
     Route::resource('/lab',LabController::class);
+    Route::post('/task/{task}/submitted/{detail}/accepted', [TaskController::class, 'accept'])->name('task.accepted');
+    Route::post('/task/{task}/submitted/{detail}/rejected', [TaskController::class, 'reject'])->name('task.rejected');
+    Route::post('/task/clear-proofs', [TaskController::class, 'clearProofs'])->name('task.clearProofs');
     Route::resource('/task',TaskController::class);
+    Route::get('/task/{task}/submitted',[TaskController::class,'submitted'])->name('task.submitted');
+    Route::get('/task/{task}/unsubmitted',[TaskController::class,'unsubmitted'])->name('task.unsubmitted');
 });
 
 Route::middleware('auth:students')->group(function(){

@@ -20,7 +20,7 @@ class AuthController
 
     if(Auth::guard('web')->attempt($credentials)){
         $request->session()->regenerate();
-        return redirect()->intended('/admin/dashboard');
+        return redirect()->route('task.index');
     }
 
     if(Auth::guard('students')->attempt($credentials)){

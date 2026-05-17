@@ -4,6 +4,14 @@
 
 @section('content')
 
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+@if(session('errors'))
+    <div class="alert alert-danger">{{ session('errors') }}</div>
+@endif
+
 <div class="d-flex flex-column" style="height: 100vw">
     <div class="d-flex align-items-center mt-30" style="height: 15%">
         <h1 class="d-flex">Manajemen Tugas PKL</h1>
@@ -24,11 +32,15 @@
                 <tr>
                     <td>{{$task->desc}}</td>
                     <td>{{$task->due}}</td>
-                    <td>Ditambahkan</td>
-                    <td><a href="#" class="text-warning">Ubah</a> <form action="{{route('task.destroy',$task->id)}}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Hapus</button></form></td>
+                    <td><a href="{{route('task.unsubmitted',$task->id)}}" class="link-underline-opacity-0 link-danger link-underline-opacity-100-hover">{{$unsubmitted}}</a> <a href="{{route('task.submitted',$task->id)}}" class="link-underline-opacity-0 link-success link-underline-opacity-100-hover">{{$submitted}}</a></td>
+                    <td class="d-flex gap-2 align-items-center">
+                        <a href="{{ route('task.edit', $task->id) }}" class="btn btn-warning btn-sm">Ubah</a>
+                        <form action="{{ route('task.destroy', $task->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                    </td>
                 </tr>
                 @empty
                 <tr>

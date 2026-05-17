@@ -18,6 +18,10 @@ class Task extends Model
         'due'
     ];
 
+    protected $casts = [
+        'due'=>'datetime'
+    ];
+
     public function taskDetail():HasMany
     {
         return $this->hasMany(TaskDetail::class,'task_id','id');

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{asset('logo/lab.png')}}">
     <title>Login Page</title>
-    @vite(['resources/sass/app.scss','resources/js/app.scss'])
+    @vite(['resources/sass/app.scss','resources/js/app.js'])
     <style>
         html,body{
             margin: 0;
@@ -13,6 +13,13 @@
     </style>
 </head>
 <body>
+
+@if($errors->any())
+    <div class="alert alert-danger">
+        {{ $errors->first('message') }}
+    </div>
+@endif
+
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh">
     <div class="card p-4" style="width: 300px;min-height:300px;">
         <h1 class="d-flex mb-4 justify-content-center">Silahkan Login</h1>
