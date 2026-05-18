@@ -5,7 +5,7 @@
 @section('content')
 
 <div class="mb-4">
-    <button class="btn btn-outline-secondary btn-sm mb-2">&larr; <a href="{{route('task.index')}}">Kembali</a></button>
+    <a href="{{ route('task.index') }}" class="btn btn-outline-secondary btn-sm mb-2 text-decoration-none">&larr; Kembali</a>
     <h2 class="mb-0">Siswa Belum Mengumpulkan</h2>
     <p class="text-muted">Tugas: <span class="text-dark fw-bold">{{ $task->desc }}</span></p>
 </div>

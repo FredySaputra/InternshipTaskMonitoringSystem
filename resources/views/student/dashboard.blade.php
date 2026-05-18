@@ -56,13 +56,26 @@
                         </thead>
                         <tbody>
                             @forelse($taskDetails as $detail)
-                            <tr class="text-center">
-                                <td class="text-start ps-4">{{ $detail->task->desc }}</td>
 
-                                <td>{{ \Carbon\Carbon::parse($detail->task->due)->format('d M Y, H:i') }}</td>
+                            <tr class="text-center {{ $detail->is_late ? 'text-danger' : '' }}">
+                                <td class="text-start ps-4 fw-semibold">{{ $detail->task->desc }}</td>
 
                                 <td>
-                                    @if($detail->sub_stat == 'queue')
+                                    <span class="{{ $detail->is_late ? 'fw-bold' : '' }}">
+                                        {{ \Carbon\Carbon::parse($detail->task->due)->format('d M Y, H:i') }}
+                                    </span>
+
+                                    @if($detail->is_late && $detail->sub_stat == 'queue')
+                                        <br><small class="text-danger fw-bold">(Melewati Tenggat)</small>
+                                    @elseif($detail->is_late && $detail->sub_stat != 'queue')
+                                        <br><small class="text-danger fw-bold">(Dikumpulkan Terlambat)</small>
+                                    @endif
+                                </td>
+
+                                <td>
+                                    @if($detail->sub_stat == 'queue' && $detail->is_late)
+                                        <span class="badge bg-dark px-3 py-2">Waktu Habis</span>
+                                    @elseif($detail->sub_stat == 'queue')
                                         <span class="badge bg-secondary">Belum Dikerjakan</span>
                                     @elseif($detail->sub_stat == 'submitted')
                                         <span class="badge bg-info text-dark">Menunggu Review Admin</span>
@@ -74,12 +87,14 @@
                                 </td>
 
                                 <td>
-                                    @if($detail->sub_stat == 'queue' || $detail->sub_stat == 'rejected')
+                                    @if($detail->sub_stat == 'queue' && $detail->is_late)
+                                        <button class="btn btn-secondary btn-sm px-3" disabled>🔒 Terkunci</button>
+                                    @elseif($detail->sub_stat == 'queue' || $detail->sub_stat == 'rejected')
                                         <a href="{{ route('student-task.create', $detail->id) }}" class="btn btn-primary btn-sm">
                                             Kumpulkan Tugas
                                         </a>
                                     @else
-                                        <button class="btn btn-outline-success btn-sm" disabled>Selesai</button>
+                                        <button class="btn btn-outline-success btn-sm px-3" disabled>Selesai</button>
                                     @endif
                                 </td>
                             </tr>

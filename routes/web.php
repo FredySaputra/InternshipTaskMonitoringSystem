@@ -8,6 +8,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentTaskController;
 use App\Http\Controllers\TaskController;
 use App\Models\Student;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +20,7 @@ Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 Route::middleware('auth:web')->group(function(){
     Route::get('/admin/dashboard',[AdminController::class,'index']);
+    Route::get('/student/print-pdf', [StudentController::class, 'printPdf'])->name('student.printPdf');
     Route::resource('/student',StudentController::class);
     Route::resource('/school',SchoolController::class);
     Route::resource('/lab',LabController::class);
@@ -36,4 +38,17 @@ Route::middleware('auth:students')->group(function(){
     Route::get('/student-dashboard',[StudentController::class,'dashboard'])->name('student.dashboard');
     Route::post('/student-task/{detail}/add',[StudentTaskController::class,'add'])->name('student-task.add');
     Route::get('/student-task/{detail}',[StudentTaskController::class,'create'])->name('student-task.create');
+});
+
+Route::get('/clear-all-cache', function () {
+    Route::clear('route:clear');
+    Route::clear('config:clear');
+    Route::clear('view:clear');
+    Route::clear('cache:clear');
+
+    Artisan::call('route:cache');
+    Artisan::call('config:cache');
+    Artisan::call('view:cache');
+
+    return "All caches cleared and optimized successfully on InfinityFree!";
 });

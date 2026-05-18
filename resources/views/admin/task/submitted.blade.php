@@ -9,7 +9,7 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
-            <a href="{{ route('task.index') }}" class="btn btn-outline-secondary btn-sm mb-2">&larr; Kembali</a>
+            <a href="{{ route('task.index') }}" class="btn btn-outline-secondary btn-sm mb-2 text-decoration-none">&larr; Kembali</a>
             <h2 class="mb-0">Daftar Pengumpulan Tugas</h2>
             <p class="text-muted mb-0">Tugas: <span class="text-dark fw-bold">{{ $task->desc }}</span></p>
         </div>
@@ -23,10 +23,6 @@
                     ❌ Tolak Terpilih
                 </button>
             </div>
-
-            <button type="submit" form="clear-proofs-form" class="btn btn-outline-danger btn-sm shadow-sm">
-                🗑️ Hapus Semua Bukti Fisik
-            </button>
         </div>
     </div>
 

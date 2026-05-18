@@ -4,11 +4,21 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
     <h2 class="mb-0">Manajemen Tugas PKL</h2>
-    <a href="{{ route('task.create') }}" class="btn btn-primary shadow-sm">
-        + Tambah Data
-    </a>
+
+    <div class="d-flex gap-2 flex-wrap">
+        <form action="{{ route('task.clearProofs') }}" method="POST" class="m-0" onsubmit="return confirm('Peringatan: Yakin ingin menghapus SEMUA berkas fisik bukti gambar dari SELURUH tugas di server? Tindakan ini permanen!');">
+            @csrf
+            <button type="submit" class="btn btn-outline-danger shadow-sm">
+                🗑️ Kosongkan Penyimpanan Bukti
+            </button>
+        </form>
+
+        <a href="{{ route('task.create') }}" class="btn btn-primary shadow-sm">
+            + Tambah Tugas Baru
+        </a>
+    </div>
 </div>
 
 <div class="card shadow-sm border-0">

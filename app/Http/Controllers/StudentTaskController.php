@@ -8,13 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Laravel\Facades\Image;
 
-use function Illuminate\Support\now;
-
 class StudentTaskController
 {
     public function create(TaskDetail $detail){
         if ($detail->student_id !== auth('students')->id()) {
             abort(403, 'Anda tidak diizinkan mengakses tugas ini.');
+        }
+
+        if ($detail->sub_stat == 'queue' && now()->greaterThan($detail->task->due)) {
+            abort(403, 'Waktu pengumpulan tugas sudah habis. Halaman dikunci.');
         }
 
         return view('student.student-task.add',compact('detail'));
@@ -25,6 +27,10 @@ class StudentTaskController
 
         if ($detail->student_id !== $user->id) {
             abort(403, 'Anda tidak diizinkan mengakses tugas ini.');
+        }
+
+        if ($detail->sub_stat == 'queue' && now()->greaterThan($detail->task->due)) {
+            abort(403, 'Waktu pengumpulan tugas sudah habis. Anda tidak dapat mengunggah file.');
         }
 
         $file = $request->file('proof');
@@ -45,6 +51,6 @@ class StudentTaskController
         ]);
 
         return redirect()->route('student.dashboard')
-                         ->with('success','Tugas berhasil dikumpulkan.');
+                    ->with('success','Tugas berhasil dikumpulkan.');
     }
 }

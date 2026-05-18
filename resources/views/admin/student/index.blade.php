@@ -6,9 +6,16 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="mb-0">Manajemen Siswa</h2>
-    <a href="{{ route('student.create') }}" class="btn btn-primary shadow-sm">
-        + Tambah Data
-    </a>
+
+    <div class="d-flex gap-2">
+        <a href="{{ route('student.printPdf') }}" class="btn btn-outline-danger shadow-sm d-flex align-items-center gap-2">
+            <i class="fa-solid fa-file-pdf"></i> Cetak Laporan PDF
+        </a>
+
+        <a href="{{ route('student.create') }}" class="btn btn-primary shadow-sm">
+            + Tambah Data
+        </a>
+    </div>
 </div>
 
 <div class="card shadow-sm border-0">
@@ -20,7 +27,7 @@
                         <th scope="col" class="text-start ps-4">Nama</th>
                         <th scope="col">Asal Sekolah</th>
                         <th scope="col">Penempatan Lab</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Skor Nilai (Progres)</th> <th scope="col">Status</th>
                         <th scope="col" width="180">Action</th>
                     </tr>
                 </thead>
@@ -32,6 +39,23 @@
                         <td>
                             <span class="badge bg-light text-dark border">{{ $student->lab->name }}</span>
                         </td>
+
+                        <td>
+                            @if($student->grade_percentage >= 80)
+                                <span class="badge bg-success px-3 py-2 fs-7 shadow-sm">
+                                    {{ $student->grade_percentage }}% ({{ $student->accepted_tasks }}/{{ $student->total_tasks }})
+                                </span>
+                            @elseif($student->grade_percentage >= 50)
+                                <span class="badge bg-warning text-dark px-3 py-2 fs-7 shadow-sm">
+                                    {{ $student->grade_percentage }}% ({{ $student->accepted_tasks }}/{{ $student->total_tasks }})
+                                </span>
+                            @else
+                                <span class="badge bg-danger px-3 py-2 fs-7 shadow-sm">
+                                    {{ $student->grade_percentage }}% ({{ $student->accepted_tasks }}/{{ $student->total_tasks }})
+                                </span>
+                            @endif
+                        </td>
+
                         <td>
                             @if($student->status == 'active')
                                 <span class="badge bg-success">Aktif</span>
@@ -52,7 +76,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
+                        <td colspan="6" class="text-center text-muted py-4">
                             Belum ada data siswa yang ditambahkan.
                         </td>
                     </tr>

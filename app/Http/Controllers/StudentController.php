@@ -7,6 +7,7 @@ use App\Models\Lab;
 use App\Models\School;
 use App\Models\Student;
 use App\Models\TaskDetail;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,8 +18,27 @@ class StudentController
     public function dashboard()
     {
         $student = Auth::guard('students')->user();
-        $taskDetails = TaskDetail::where('student_id',$student->id)->where('sub_stat','!=','accepted')->paginate(15);
-        return view('student.dashboard',compact('student','taskDetails'));
+
+        $taskDetails = TaskDetail::with('task')
+            ->where('student_id', $student->id)
+            ->where('sub_stat', '!=', 'accepted')
+            ->where(function ($query) {
+                $query->where('sub_stat', '!=', 'queue')
+                      ->orWhereHas('task', function ($q) {
+                          $q->whereDate('due', '>=', now()->toDateString());
+                      });
+            })            ->get()
+            ->map(function ($detail) {
+                if ($detail->sub_stat == 'queue') {
+                    $detail->is_late = now()->greaterThan($detail->task->due);
+                } else {
+                    $detail->is_late = $detail->updated_at->greaterThan($detail->task->due);
+                }
+
+                return $detail;
+            });
+
+        return view('student.dashboard', compact('student', 'taskDetails'));
     }
 
     /**
@@ -26,7 +46,25 @@ class StudentController
      */
     public function index()
     {
-        $students = Student::with(['school', 'lab'])->orderBy('lab_id')->paginate(15);
+        $students = Student::with(['school', 'lab'])
+            ->withCount([
+                'taskDetail as total_tasks',
+                'taskDetail as accepted_tasks' => function ($query) {
+                    $query->where('sub_stat', 'accepted');
+                }
+            ])
+            ->orderBy('lab_id')
+            ->paginate(15);
+
+        $students->getCollection()->transform(function ($student) {
+            if ($student->total_tasks > 0) {
+                $student->grade_percentage = round(($student->accepted_tasks / $student->total_tasks) * 100);
+            } else {
+                $student->grade_percentage = 0;
+            }
+            return $student;
+        });
+
         return view('admin.student.index', compact('students'));
     }
 
@@ -101,5 +139,34 @@ class StudentController
         $student->delete();
         return redirect()->route('student.index')
                          ->with('success','Data siswa berhasil dihapus');
+    }
+
+    public function printPdf()
+    {
+        $students = Student::with(['school', 'lab'])
+            ->withCount([
+                'taskDetail as total_tasks',
+                'taskDetail as accepted_tasks' => function ($query) {
+                    $query->where('sub_stat', 'accepted');
+                }
+            ])
+            ->orderBy('lab_id')
+            ->get();
+
+        $students->transform(function ($student) {
+            if ($student->total_tasks > 0) {
+                $student->grade_percentage = round(($student->accepted_tasks / $student->total_tasks) * 100);
+            } else {
+                $student->grade_percentage = 0;
+            }
+            return $student;
+        });
+
+        $datePrinted = now()->format('d F Y, H:i') . ' WIB';
+
+        $pdf = Pdf::loadView('admin.student.report_pdf', compact('students', 'datePrinted'))
+                  ->setPaper('a4', 'portrait'); // Menggunakan ukuran kertas A4 potret
+
+        return $pdf->download('Laporan_Akumulasi_Nilai_Siswa_PKL_' . now()->format('Ymd') . '.pdf');
     }
 }
