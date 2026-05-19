@@ -1,36 +1,36 @@
-# Portal PKL - Monitoring Penugasan Laboratorium Komputer
+# Internship Task Monitoring System
 
-Aplikasi berbasis web untuk mengelola penugasan siswa PKL dari berbagai sekolah SMK. Dibangun menggunakan **Laravel 12** dan **Bootstrap 5**, serta dioptimalkan agar enteng saat di-deploy.
-
----
-
-## Fitur Aplikasi
-
-### 👨‍💼 Fitur Admin (Supervisor)
-- **CRUD Sekolah & Lab:** Tambah dan kelola data sekolah mitra serta penempatan divisi lab. Sudah mendukung *cascade delete* (hapus sekolah otomatis membersihkan data siswa di dalamnya).
-- **Cek Nilai & Progres:** Indikator persentase otomatis untuk melihat berapa banyak tugas siswa yang sudah di-acc secara *real-time*.
-- **Bulk Action Tugas:** Fitur terima (*Accept*) atau tolak (*Reject*) puluhan tugas siswa sekaligus dalam satu klik.
-- **Fitur Kosongkan Storage:** Tombol khusus untuk menghapus semua file gambar bukti tugas di server sekaligus untuk menghemat kuota hosting.
-- **Cetak PDF:** Export rekapitulasi nilai kumulatif seluruh siswa ke file PDF via DOMPDF.
-- **UI Modern:** Semua konfirmasi hapus data menggunakan pop-up animasi dari **SweetAlert2** (tidak memakai `confirm()` bawaan browser yang jadul).
-
-### 🎓 Fitur Siswa (PKL)
-- **Upload Bukti Tugas:** Halaman dashboard untuk mengirimkan file gambar bukti pengerjaan tugas.
-- **Auto-Lock Sistem:** Tombol upload otomatis terkunci dari sisi backend jika waktu pengumpulan sudah melewati *tenggat* yang ditentukan admin.
+A web-based application designed to manage and monitor tasks for vocational high school interns. Built with **Laravel 12** and **Bootstrap 5**, and highly optimized for lightweight deployment on shared hosting environments.
 
 ---
 
-## Struktur Folder Hosting (Split-Folder Setup)
+## Features
 
-Proyek ini menggunakan struktur pemisahan folder di shared hosting demi keamanan, agar file core Laravel tidak bisa diakses langsung dari URL publik:
+### 👨‍💼 Admin Features (Supervisor)
+- **School & Lab CRUD:** Add and manage partner school data and laboratory division placements. Fully supports *cascade delete* (deleting a school automatically removes its associated student data).
+- **Grade & Progress Tracking:** Automated percentage indicators to monitor approved student tasks in *real-time*.
+- **Task Bulk Actions:** Streamline your workflow by accepting or rejecting dozens of student submissions simultaneously with a single click.
+- **Storage Cleaner:** A dedicated feature to wipe all task evidence image files from the server at once, preventing hosting storage quota overload.
+- **PDF Export:** Export cumulative grade recaps for all students into PDF format via DOMPDF.
+- **Modern UI:** All delete confirmations utilize elegant animated pop-ups from **SweetAlert2**, replacing the outdated native browser `confirm()` dialogue.
+
+### 🎓 Intern Features (Student)
+- **Task Evidence Upload:** A dedicated dashboard for interns to submit image proofs of their completed tasks.
+- **Auto-Lock System:** The upload button is automatically locked from the backend if the submission time has passed the admin-defined *due date*.
+
+---
+
+## Hosting Folder Structure (Split-Folder Setup)
+
+This project utilizes a split-folder architecture on shared hosting for enhanced security, preventing direct public URL access to the Laravel core files:
 
 ```text
-└── laravel/                # Core System Laravel 
-    ├── app/                # Controller, Model, & Middleware
-    ├── bootstrap/          # Init system & cache
-    ├── config/             # Semua konfigurasi framework
-    ├── resources/          # File view Blade & text mentah
-    └── storage/            # Tempat upload bukti tugas & session login
+└── laravel/                # Core Laravel System 
+    ├── app/                # Controllers, Models, & Middleware
+    ├── bootstrap/          # System initialization & cache
+    ├── config/             # All framework configurations
+    ├── resources/          # Blade view files & raw texts
+    └── storage/            # Task evidence uploads & login sessions
 ```
 
 ---
@@ -40,45 +40,45 @@ Proyek ini menggunakan struktur pemisahan folder di shared hosting demi keamanan
 - **Framework:** Laravel 12.x
 - **Runtime:** PHP 8.3.x
 - **Database:** MySQL
-- **Frontend:** Bootstrap 5.3 & SweetAlert2 *(via CDN produksi untuk menghemat bandwidth hosting)*
+- **Frontend:** Bootstrap 5.3 & SweetAlert2 *(via production CDN to save hosting bandwidth)*
 - **Library:** Barryvdh DomPDF & FontAwesome 6.5
 
 ---
 
-## 💻 Cara Install di Lokal
+## 💻 Local Installation Guide
 
-Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal Anda:
+Follow these steps to run the project in your local environment:
 
-1. **Clone Repositori:**
+1. **Clone the Repository:**
 ```bash
 git clone https://github.com/FredySaputra/InternshipTaskMonitoringSystem.git
 cd InternshipTaskMonitoringSystem
 ```
 
-2. **Install Dependensi Composer:**
+2. **Install Composer Dependencies:**
 ```bash
 composer install
 ```
 
-3. **Konfigurasi Environment:**
-Salin file `.env.example` menjadi `.env`, lalu sesuaikan konfigurasi database Anda di dalamnya.
+3. **Environment Configuration:**
+Copy the `.env.example` file to `.env`, then configure your database credentials inside.
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-4. **Jalankan Migrasi & Seeder:**
+4. **Run Migrations & Seeders:**
 ```bash
 php artisan migrate --seed
 ```
 
-5. **Optimasi Cache & Jalankan Server:**
+5. **Clear Cache & Run Server:**
 ```bash
 php artisan route:clear
 php artisan serve
 ```
 
-Setelah server berjalan, buka `http://127.0.0.1:8000` pada browser Anda.
+Once the server is running, open `http://127.0.0.1:8000` in your browser.
 
 ---
 <p align="center">
