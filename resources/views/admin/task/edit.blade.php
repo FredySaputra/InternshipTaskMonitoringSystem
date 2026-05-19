@@ -17,17 +17,17 @@
                     @method('PUT')
 
                     <div class="mb-3">
-                        <label for="desc" class="form-label fw-bold">Deskripsi Tugas :</label>
+                        <label for="desc" class="form-label fw-bold">Deskripsi Tugas<span style="color: red">*</span> :</label>
                         <input type="text" name="desc" id="desc" class="form-control" value="{{ old('desc', $task->desc) }}" required>
                     </div>
 
                     <div class="mb-4">
-                        <label for="due" class="form-label fw-bold">Tenggat Tugas :</label>
+                        <label for="due" class="form-label fw-bold">Tenggat Tugas<span style="color: red">*</span> :</label>
                         <input type="datetime-local" name="due" id="due" class="form-control" value="{{ old('due', $task->due->format('Y-m-d\TH:i')) }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Pilih Siswa :</label>
+                        <label class="form-label fw-bold">Pilih Siswa<span style="color: red">*</span> :</label>
 
                         <div class="form-check border-bottom pb-2 mb-2">
                             <input class="form-check-input" type="checkbox" id="select-all">

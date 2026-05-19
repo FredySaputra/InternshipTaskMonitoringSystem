@@ -31,10 +31,10 @@
                             <div class="d-flex justify-content-center gap-2">
                                 <a href="{{ route('lab.edit', $lab->id) }}" class="btn btn-warning btn-sm">Ubah</a>
 
-                                <form action="{{ route('lab.destroy', $lab->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus lab ini?');">
+                                <form action="{{ route('lab.destroy', $lab->id) }}" method="POST" class="form-delete m-0">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-delete">Hapus</button>
                                 </form>
                             </div>
                         </td>
@@ -52,4 +52,32 @@
     </div>
 </div>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                const form = this.closest('.form-delete');
+
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Data laboratorium yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endsection

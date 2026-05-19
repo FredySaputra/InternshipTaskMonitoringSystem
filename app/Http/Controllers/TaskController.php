@@ -26,7 +26,9 @@ class TaskController
             'taskDetail as unsubmitted_count' => function ($query) {
                 $query->where('sub_stat', 'queue');
             }
-        ])->get();
+        ])
+        ->orderBy('due', 'desc')
+        ->paginate(10);          
 
         return view('admin.task.index', compact('tasks'));
     }

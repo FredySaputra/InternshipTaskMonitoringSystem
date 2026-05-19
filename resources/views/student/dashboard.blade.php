@@ -14,7 +14,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="#">🎓 Panel Siswa PKL</a>
+            <a class="navbar-brand" href="#">Panel Siswa PKL</a>
             <div class="d-flex align-items-center gap-3">
                 <span class="text-light d-none d-md-inline">Selamat datang, <b>{{ $student->name }}</b></span>
                 <form action="{{ route('logout') }}" method="POST" class="m-0">

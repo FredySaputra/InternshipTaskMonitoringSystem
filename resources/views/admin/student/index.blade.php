@@ -27,7 +27,8 @@
                         <th scope="col" class="text-start ps-4">Nama</th>
                         <th scope="col">Asal Sekolah</th>
                         <th scope="col">Penempatan Lab</th>
-                        <th scope="col">Skor Nilai (Progres)</th> <th scope="col">Status</th>
+                        <th scope="col">Skor Nilai (Progres)</th>
+                        <th scope="col">Status</th>
                         <th scope="col" width="180">Action</th>
                     </tr>
                 </thead>
@@ -66,10 +67,11 @@
                         <td>
                             <div class="d-flex justify-content-center gap-2">
                                 <a href="{{ route('student.edit', $student->id) }}" class="btn btn-warning btn-sm">Ubah</a>
-                                <form action="{{ route('student.destroy', $student->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data siswa ini?');">
+
+                                <form action="{{ route('student.destroy', $student->id) }}" method="POST" class="form-delete m-0">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-delete">Hapus</button>
                                 </form>
                             </div>
                         </td>
@@ -90,5 +92,33 @@
 <div class="d-flex justify-content-center mt-4">
     {{ $students->links() }}
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                const form = this.closest('.form-delete');
+
+                Swal.fire({
+                    title: 'Hapus data siswa?',
+                    text: "Tindakan ini akan menghapus seluruh data progres dan berkas tugas yang pernah dikumpulkan oleh siswa ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545', 
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 
 @endsection

@@ -11,7 +11,6 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
         body {
-            /* Background gradien biru ke abu-abu yang elegan */
             background: linear-gradient(135deg, #f8f9fa 0%, #e0e7ff 100%);
             min-height: 100vh;
             display: flex;
@@ -30,9 +29,11 @@
             padding: 2.5rem 2rem 1.5rem 2rem;
         }
         .brand-icon {
-            font-size: 3.5rem;
-            line-height: 1;
-            margin-bottom: 1rem;
+            max-width: 80px;
+            margin: 0 auto 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .form-control {
             background-color: #f8f9fa;
@@ -58,10 +59,10 @@
 
             <div class="login-header text-center border-bottom">
                 <div class="brand-icon text-primary">
-                    <i class="fa-solid fa-clipboard-check"></i>
+                    <img src="{{ asset('logo/lab.png') }}" alt="Lab ICT">
                 </div>
-                <h3 class="fw-bold text-dark mb-1">Portal PKL</h3>
-                <p class="text-muted fs-6 mb-0">Sistem Monitoring Penugasan Lab</p>
+                <h3 class="fw-bold text-dark mb-1">Monitoring PKL</h3>
+                <p class="text-muted fs-6 mb-0">Sistem Monitoring PKL Lab ICT</p>
             </div>
 
             <div class="card-body p-4 p-sm-5 bg-white">
@@ -91,7 +92,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 btn-login rounded-3 shadow-sm mt-2">
-                        Masuk Sistem
+                        Masuk
                     </button>
                 </form>
 
@@ -99,7 +100,7 @@
 
             <div class="card-footer bg-light text-center py-3 border-0">
                 <small class="text-muted">
-                    &copy; {{ date('Y') }} Laboratorium Komputer Universitas Budi Luhur<br>
+                    &copy; {{ date('Y') }} Laboratorium ICT Universitas Budi Luhur<br>
                     <span style="font-size: 0.75rem;">Gunakan kredensial yang telah diberikan oleh supervisor.</span>
                 </small>
             </div>

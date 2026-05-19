@@ -13,18 +13,18 @@
             <div class="card-body p-4">
                 <form action="{{ route('lab.update',$lab->id) }}" method="POST">
                     @csrf
-
+                    @method('PUT')
                     <div class="mb-3">
-                        <label for="name" class="form-label fw-bold">Nama Lab</label>
-                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name',$lab->name) }}" placeholder="Contoh: Lab Komputer 1">
+                        <label for="name" class="form-label fw-bold">Nama Lab<span style="color: red">*</span> : </label>
+                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name',$lab->name) }}" placeholder="Contoh: Lab Komputer 1" maxlength="40" required>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-4">
-                        <label for="category" class="form-label fw-bold">Kategori Lab</label>
-                        <select name="category" id="category" class="form-select @error('category') is-invalid @enderror">
+                        <label for="category" class="form-label fw-bold">Kategori Lab<span style="color: red">*</span> : </label>
+                        <select name="category" id="category" class="form-select @error('category') is-invalid @enderror" maxlength="40" required>
                             <option value="">-- Pilih Kategori Lab --</option>
                             <option value="Programming" {{ old('category',$lab->category) == 'Programming' ? 'selected' : '' }}>Programming</option>
                             <option value="Design" {{ old('category',$lab->category) == 'Design' ? 'selected' : '' }}>Design</option>

@@ -8,9 +8,9 @@
     <h2 class="mb-0">Manajemen Tugas PKL</h2>
 
     <div class="d-flex gap-2 flex-wrap">
-        <form action="{{ route('task.clearProofs') }}" method="POST" class="m-0" onsubmit="return confirm('Peringatan: Yakin ingin menghapus SEMUA berkas fisik bukti gambar dari SELURUH tugas di server? Tindakan ini permanen!');">
+        <form id="form-clear-proofs" action="{{ route('task.clearProofs') }}" method="POST" class="m-0">
             @csrf
-            <button type="submit" class="btn btn-outline-danger shadow-sm">
+            <button type="button" id="btn-clear-proofs" class="btn btn-outline-danger shadow-sm">
                 🗑️ Kosongkan Penyimpanan Bukti
             </button>
         </form>
@@ -55,10 +55,11 @@
                         <td>
                             <div class="d-flex justify-content-center gap-2">
                                 <a href="{{ route('task.edit', $task->id) }}" class="btn btn-warning btn-sm">Ubah</a>
-                                <form action="{{ route('task.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Menghapus tugas akan menghapus berkas pengumpulan siswa. Lanjutkan?');">
+
+                                <form action="{{ route('task.destroy', $task->id) }}" method="POST" class="form-delete m-0">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-delete">Hapus</button>
                                 </form>
                             </div>
                         </td>
@@ -75,5 +76,59 @@
         </div>
     </div>
 </div>
+<div class="d-flex justify-content-center mt-4">
+    {{ $tasks->links() }}
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const btnClearProofs = document.getElementById('btn-clear-proofs');
+        if (btnClearProofs) {
+            btnClearProofs.addEventListener('click', function () {
+                const formClear = document.getElementById('form-clear-proofs');
+
+                Swal.fire({
+                    title: 'Kosongkan Semua Bukti?',
+                    text: "Peringatan Besar: Tindakan ini akan menghapus SEMUA berkas fisik bukti gambar dari SELURUH tugas yang ada di server! Data ini tidak dapat dikembalikan.",
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus Semua!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        formClear.submit();
+                    }
+                });
+            });
+        }
+
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const formDelete = this.closest('.form-delete');
+
+                Swal.fire({
+                    title: 'Hapus Tugas Ini?',
+                    text: "Menghapus tugas ini akan melenyapkan seluruh riwayat progres dan berkas pengumpulan siswa yang berkaitan.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        formDelete.submit();
+                    }
+                });
+            });
+        });
+
+    });
+</script>
 
 @endsection
