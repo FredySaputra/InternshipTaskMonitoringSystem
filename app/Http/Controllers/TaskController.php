@@ -28,7 +28,7 @@ class TaskController
             }
         ])
         ->orderBy('due', 'desc')
-        ->paginate(10);          
+        ->paginate(10);
 
         return view('admin.task.index', compact('tasks'));
     }
@@ -95,8 +95,8 @@ class TaskController
         $details = TaskDetail::whereNotNull('proof')->get();
 
         foreach ($details as $detail) {
-            if (Storage::disk('public_htdocs')->exists($detail->proof)) {
-                Storage::disk('public_htdocs')->delete($detail->proof);
+            if (Storage::disk('public')->exists($detail->proof)) {
+                Storage::disk('public')->delete($detail->proof);
             }
         }
 
@@ -182,8 +182,8 @@ class TaskController
          $details = TaskDetail::where('task_id', $task->id)->get();
 
          foreach ($details as $detail) {
-            if ($detail->proof && Storage::disk('public_htdocs')->exists($detail->proof)) {
-                Storage::disk('public_htdocs')->delete($detail->proof);
+            if ($detail->proof && Storage::disk('public')->exists($detail->proof)) {
+                Storage::disk('public')->delete($detail->proof);
             }
         }
 

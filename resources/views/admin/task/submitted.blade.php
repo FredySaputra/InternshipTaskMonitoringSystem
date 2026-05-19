@@ -57,7 +57,7 @@
                             <td class="text-muted">{{ \Carbon\Carbon::parse($detail->updated_at)->format('d M Y, H:i') }}</td>
                             <td>
                                 @if($detail->proof)
-                                    <a href="{{ asset($detail->proof) }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                    <a href="{{ Storage::url($detail->proof) }}" target="_blank" class="btn btn-outline-primary btn-sm">
                                         🔍 Lihat Gambar Bukti
                                     </a>
                                 @else

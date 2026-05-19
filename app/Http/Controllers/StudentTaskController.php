@@ -38,11 +38,11 @@ class StudentTaskController
         $fileName = 'proof_'.$user->id.'_'.now()->format('Ymd_His').'.jpg';
         $path = 'proofs/'.$fileName;
 
-        if ($detail->proof && Storage::disk('public_htdocs')->exists($detail->proof)) {
-            Storage::disk('public_htdocs')->delete($detail->proof);
+        if ($detail->proof && Storage::disk('public')->exists($detail->proof)) {
+            Storage::disk('public')->delete($detail->proof);
         }
 
-        Storage::disk('public_htdocs')->put($path, (string) $image);
+        Storage::disk('public')->put($path, (string) $image);
 
         $detail->update([
             'proof'=>$path,
