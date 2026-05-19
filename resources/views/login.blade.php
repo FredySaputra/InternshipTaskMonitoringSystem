@@ -59,7 +59,7 @@
 
             <div class="login-header text-center border-bottom">
                 <div class="brand-icon text-primary">
-                    <img src="{{ asset('logo/lab.png') }}" alt="Lab ICT">
+                    <img src="{{ asset('logo/lab.png') }}" class="w-100 h-auto">
                 </div>
                 <h3 class="fw-bold text-dark mb-1">Monitoring PKL</h3>
                 <p class="text-muted fs-6 mb-0">Sistem Monitoring PKL Lab ICT</p>

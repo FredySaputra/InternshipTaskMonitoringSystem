@@ -16,10 +16,10 @@
 
         <div class="d-flex gap-2 flex-wrap">
             <div class="btn-group shadow-sm" role="group">
-                <button type="button" onclick="submitBulk('{{ route('task.bulkAccept', $task->id) }}')" class="btn btn-success btn-sm px-3">
+                <button type="button" onclick="submitBulk('{{ route('task.bulkAccept', $task->id) }}', 'accept')" class="btn btn-success btn-sm px-3">
                     ✔ Setujui Terpilih
                 </button>
-                <button type="button" onclick="submitBulk('{{ route('task.bulkReject', $task->id) }}')" class="btn btn-danger btn-sm px-3">
+                <button type="button" onclick="submitBulk('{{ route('task.bulkReject', $task->id) }}', 'reject')" class="btn btn-danger btn-sm px-3">
                     ❌ Tolak Terpilih
                 </button>
             </div>
@@ -101,18 +101,52 @@
         checkboxes.forEach(cb => cb.checked = this.checked);
     });
 
-    function submitBulk(routeUrl) {
+    function submitBulk(routeUrl, actionType) {
         let checkedCount = document.querySelectorAll('.student-checkbox:checked').length;
+
         if (checkedCount === 0) {
-            alert('Silakan pilih minimal satu siswa terlebih dahulu.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: 'Silakan pilih minimal satu siswa terlebih dahulu!',
+                confirmButtonColor: '#0d6efd',
+                confirmButtonText: 'Mengerti'
+            });
             return;
         }
 
-        if (confirm(`Apakah Anda yakin ingin memproses ${checkedCount} tugas sekaligus?`)) {
-            let form = document.getElementById('bulk-action-form');
-            form.action = routeUrl;
-            form.submit();
-        }
+        let isAccept = (actionType === 'accept');
+
+        let actionWord = isAccept ? 'MENYETUJUI' : 'MENOLAK';
+        let confirmColor = isAccept ? '#198754' : '#dc3545';
+        let iconType = isAccept ? 'question' : 'warning';
+
+        Swal.fire({
+            title: `Proses ${checkedCount} Tugas?`,
+            text: `Apakah Anda yakin ingin ${actionWord} tugas dari siswa yang dipilih?`,
+            icon: iconType,
+            showCancelButton: true,
+            confirmButtonColor: confirmColor,
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: isAccept ? '✔ Ya, Setujui!' : '❌ Ya, Tolak!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Memproses...',
+                    text: 'Mohon tunggu sebentar.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                let form = document.getElementById('bulk-action-form');
+                form.action = routeUrl;
+                form.submit();
+            }
+        });
     }
 </script>
 
